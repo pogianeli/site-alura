@@ -1,36 +1,47 @@
-document.getElementById('texto').innerText="Escreva o texto aqui"
-const elemento = document.querySelector("#calcular");
-const resultado = document.querySelector(".resultado");
+// Operador lógico que retorna com dados salvos, ou string vazia, utilizando localStorage.getItem, modificando o valor de `string` com JSON.parse()
 
-elemento.addEventListener("click", (evento) => {
-  resultado.innerHTML = "Fui clicado"
+const form = document.getElementById("novoItem") 
+const lista = document.getElementById("lista")
+const itens = JSON.parse(localStorage.getItem("itens")) || []   
+
+// Uso do forEach para que todos os itens já escritos na lista sejam mantidos ao atualizar a página 
+itens.forEach( (elemento) => {    
+    criaElemento(elemento)
+} )     
+
+// Refatoração do addEventListener para receber as funções extras da função criaElemento
+form.addEventListener("submit", (evento) => {   
+    evento.preventDefault()            
+
+    const nome = evento.target.elements['nome']
+    const quantidade = evento.target.elements['quantidade']
+
+    const itemAtual = {
+    "nome": nome.value,
+    "quantidade": quantidade.value
+    }
+
+    criaElemento(itemAtual)
+
+    itens.push(itemAtual)
+
+    localStorage.setItem("itens", JSON.stringify(itens))
+
+    nome.value = ""
+    quantidade.value = ""
 })
-var lista = ["Laranja", "Vermelho", "Branco", "Amarelo", "Rosa"]; 
 
-lista.splice(1,1)
+// Refatoração da função `criaElemento` para que possua apenas a função que faça sentido ao nome. 
 
-console.log(lista);
-const lista = document.querySelector("ul");
-document.querySelector("#botao").addEventListener("click", () => {
-  lista.setAttribute("data-lista", "mostrar");
-});
+function criaElemento(item) {  
+    const novoItem = document.createElement('li')
+    novoItem.classList.add("item")
 
-document.querySelector(".close").addEventListener("click", () => {
-  lista.setAttribute("data-lista", "esconder");
-});
-function trocaImagem(cor){
-    document.querySelector(".robo").src="img/Robotron 2000 - " + cor + ".png";
- }
- criaElemento(nome.value, quantidade.value)
+    const numeroItem = document.createElement('strong')
+    numeroItem.innerHTML = item.quantidade
+    novoItem.appendChild(numeroItem)
 
- nome.value = ""
- quantidade.value = ""
- const nome = evento.target.elements['nome']
- const quantidade = evento.target.elements['quantidade']
- const itemAtual = {
-    "nome": nome,
-    "quantidade": quantidade
+    novoItem.innerHTML += item.nome
+
+    lista.appendChild(novoItem)
 }
-localStorage.setItem("itens", JSON.stringify(itens))
-const itens = []
-itens.push(itemAtual)
